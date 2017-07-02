@@ -1,35 +1,50 @@
 package com.tustaml.user.dao;
 
-import javax.annotation.Resource;
-
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tustaml.user.modal.User;
 
-@Service
+@Service("userDAO")
 @Repository
 @Transactional
 public class UserDAOImpl implements UserDAO {
 
-	private SessionFactory sessionFactory;
+	@PersistenceContext
+	EntityManager entityManager;
 	
-	@Resource(name="sessionFactory")
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-
+	
 	@Override
 	@Transactional(readOnly=true)
 	public User findByUserName(String username) {
-		Session session = sessionFactory.getCurrentSession();
-		Query query = session.createQuery("from user where username = :username");
-		query.setParameter("username", username);
-		return (User) query.uniqueResult();
+		User user = (User) entityManager.createQuery("select u from User u where u.username= :username")
+											.setParameter("username", username)
+											.getSingleResult();
+		return user;
+		
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional(readOnly=true)
+	public List<User> findAll(){
+		List<User> users = entityManager
+	                .createQuery("SELECT u FROM User u ORDER BY u.firstName ASC")
+	                .getResultList();
+	        return users;
+	}
+	
+	@Override
+	public void insertUpdate(User user){
+		if(user.getId()==null){
+			entityManager.persist(user);	
+		} else {
+			entityManager.merge(user);
+		}
 	}
 
 }
