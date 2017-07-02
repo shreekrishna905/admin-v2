@@ -7,12 +7,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.tustaml.user.dao.UserDAO;
 import com.tustaml.user.modal.User;
 
-@Service("userDetailsService")
 @Transactional
 public class UserDetailServiceImpl implements UserDetailsService {
 

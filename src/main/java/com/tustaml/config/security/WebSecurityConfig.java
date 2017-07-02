@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
@@ -29,9 +30,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	DataSource dataSource;
-
-	@Autowired
-	private UserDetailServiceImpl userDetailsService;
 	
 	@Autowired
 	private ClientDetailsService clientDetailsService;
@@ -50,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public DaoAuthenticationProvider authenticationProvider() {
 	    DaoAuthenticationProvider authProvider
 	      = new DaoAuthenticationProvider();
-	    authProvider.setUserDetailsService(userDetailsService);
+	    authProvider.setUserDetailsService(userDetailsService());
 	    authProvider.setPasswordEncoder(encoder());
 	    return authProvider;
 	}
@@ -88,6 +86,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		TokenApprovalStore store = new TokenApprovalStore();
 		store.setTokenStore(tokenStore);
 		return store;
+	}
+	
+	@Bean
+	public UserDetailsService userDetailsService(){
+		return new UserDetailServiceImpl();
 	}
 
 }
