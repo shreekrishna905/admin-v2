@@ -3,11 +3,15 @@ package com.tustaml.user.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.tustaml.user.dao.UserDAO;
 import com.tustaml.user.modal.User;
@@ -19,7 +23,7 @@ public class UserRestController {
 	@Autowired
 	private UserDAO userDAO;;
 	
-	@RequestMapping(value = "/user/", method = RequestMethod.GET)
+	@RequestMapping(value = "/users", method = RequestMethod.GET, produces="application/json")
     public ResponseEntity<List<User>> listAllUsers() {
         List<User> users = userDAO.findAll();
         if (users.isEmpty()) {
@@ -27,5 +31,29 @@ public class UserRestController {
         			}
         return new ResponseEntity<List<User>>(users, HttpStatus.OK);
     }
+	
+	@RequestMapping(value = "/user", method = RequestMethod.POST)
+	public ResponseEntity<Void> createUser(@RequestBody User user, UriComponentsBuilder ucBuilder){
+					 if (userDAO.isUserExist(user)) {
+				            System.out.println("A User with name " + user.getUsername() + " already exist");
+				            return new ResponseEntity<Void>(HttpStatus.CONFLICT);
+				        }
+	        userDAO.saveOrUpdate(user);
+	        HttpHeaders headers = new HttpHeaders();
+	        headers.setLocation(ucBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri());
+	        return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+	}
+	
+	@RequestMapping(value="/user", method=RequestMethod.GET, produces="application/json")
+	public ResponseEntity<User> getUser(@RequestParam("username") String username){
+		 User user = userDAO.findByUserName(username);
+	        if (user == null) {
+	            System.out.println("User with username " + username + " not found");
+	            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+	        }
+	        return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
+	
+	
 	
 }

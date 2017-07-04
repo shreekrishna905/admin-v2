@@ -10,12 +10,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="users")
 public class User {
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	@SequenceGenerator(name="users_id_seq", sequenceName="users_id_seq",allocationSize=1)
+	@GeneratedValue(strategy= GenerationType.SEQUENCE, generator="users_id_seq")
 	private Long id;
 	
 	@Column(name="user_name")
@@ -116,5 +120,12 @@ public class User {
 	public void setRoles(Collection<Role> roles) {
 		this.roles = roles;
 	}
+	
+	//Helper Class To Add Role
+	public void addRole(Role role){
+		role.getUsers().add(this);
+		this.roles.add(role);
+	}
+	
 	
 }

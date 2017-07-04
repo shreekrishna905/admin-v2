@@ -24,8 +24,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
 @PropertySource({ "classpath:application.properties" })
-@ComponentScan({ "com.trustaml" })
-@EnableJpaRepositories(basePackages = "com.trustaml")
+@ComponentScan({ "com.tustaml" })
+@EnableJpaRepositories(basePackages = "com.tustaml")
 public class PersistenceConfig {
 
 	@Autowired
@@ -39,7 +39,7 @@ public class PersistenceConfig {
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws NamingException {
 		final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 		em.setDataSource(dataSource());
-		em.setPackagesToScan(new String[] { "org.trustaml" });
+		em.setPackagesToScan(new String[] { "com.tustaml" });
 		em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
 		em.setJpaProperties(additionalProperties());
 		return em;
@@ -66,6 +66,7 @@ public class PersistenceConfig {
 		final Properties hibernateProperties = new Properties();
 		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("spring.jpa.hibernate.ddl-auto"));
 		hibernateProperties.setProperty("hibernate.dialect", env.getProperty("spring.jpa.hibernate.dialect"));
+		hibernateProperties.setProperty("show_sql",  env.getProperty("spring.jpa.show-sql"));
 		hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", "false");
 		return hibernateProperties;
 	}

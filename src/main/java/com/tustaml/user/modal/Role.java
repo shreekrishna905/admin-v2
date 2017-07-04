@@ -7,19 +7,34 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
+@Table(name="roles")
 public class Role {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@SequenceGenerator(name="roles_id_seq", sequenceName="roles_id_seq",allocationSize=1)
+	@GeneratedValue(strategy= GenerationType.SEQUENCE, generator="roles_id_seq")
 	private Long id;
 	
 	private String name;
 	
+	@JsonIgnore
 	@ManyToMany(mappedBy = "roles")
 	private Collection<User> users;
 
+	public Role(){
+		
+	}
+
+	public Role(String name){
+		this.name = "ROLE_" + name;
+	}
+	
 	public Long getId() {
 		return id;
 	}

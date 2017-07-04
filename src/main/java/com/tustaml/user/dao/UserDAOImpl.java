@@ -39,12 +39,18 @@ public class UserDAOImpl implements UserDAO {
 	}
 	
 	@Override
-	public void insertUpdate(User user){
+	public void saveOrUpdate(User user){
 		if(user.getId()==null){
 			entityManager.persist(user);	
 		} else {
 			entityManager.merge(user);
 		}
 	}
+
+	@Override
+	public boolean isUserExist(User user) {
+		return findByUserName(user.getUsername()) !=null;
+	}
+
 
 }

@@ -8,5 +8,6 @@ public interface UserDAO {
 
 	public List<User> findAll();
 	public User findByUserName(String username);
-	public void insertUpdate(User user);
+	public void saveOrUpdate(User user);
+	public boolean isUserExist(User user);
 }
