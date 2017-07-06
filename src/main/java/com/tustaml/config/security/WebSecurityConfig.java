@@ -20,7 +20,6 @@ import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
 import org.springframework.security.oauth2.provider.approval.TokenStoreUserApprovalHandler;
 import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 
 import com.tustaml.user.security.provider.UserDetailServiceImpl;
 
@@ -31,9 +30,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	DataSource dataSource;
 	
-	@Autowired
-	private ClientDetailsService clientDetailsService;
-
+	 @Autowired
+	    private ClientDetailsService clientDetailsService;
+	
 	@Autowired
 	public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
 		 auth.authenticationProvider(authenticationProvider());
@@ -41,7 +40,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().anyRequest().authenticated().antMatchers("/oauth/token").permitAll();
+		http
+		.authorizeRequests().anyRequest().authenticated()
+	.and()
+		.csrf().disable();
 	}
 
 	@Bean
@@ -64,33 +66,30 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
 	}
-
-	@Bean
-	public TokenStore tokenStore() {
-		return new InMemoryTokenStore();
-	}
-
-	@Bean
-	@Autowired
-	public TokenStoreUserApprovalHandler userApprovalHandler(TokenStore tokenStore) {
-		TokenStoreUserApprovalHandler handler = new TokenStoreUserApprovalHandler();
-		handler.setTokenStore(tokenStore);
-		handler.setRequestFactory(new DefaultOAuth2RequestFactory(clientDetailsService));
-		handler.setClientDetailsService(clientDetailsService);
-		return handler;
-	}
-
-	@Bean
-	@Autowired
-	public ApprovalStore approvalStore(TokenStore tokenStore) throws Exception {
-		TokenApprovalStore store = new TokenApprovalStore();
-		store.setTokenStore(tokenStore);
-		return store;
-	}
 	
 	@Bean
 	public UserDetailsService userDetailsService(){
 		return new UserDetailServiceImpl();
 	}
+	
+
+	 @Bean
+	    @Autowired
+	    public TokenStoreUserApprovalHandler userApprovalHandler(TokenStore tokenStore){
+	        TokenStoreUserApprovalHandler handler = new TokenStoreUserApprovalHandler();
+	        handler.setTokenStore(tokenStore);
+	        handler.setRequestFactory(new DefaultOAuth2RequestFactory(clientDetailsService));
+	        handler.setClientDetailsService(clientDetailsService);
+	        return handler;
+	    }
+	     
+	    @Bean
+	    @Autowired
+	    public ApprovalStore approvalStore(TokenStore tokenStore) throws Exception {
+	        TokenApprovalStore store = new TokenApprovalStore();
+	        store.setTokenStore(tokenStore);
+	        return store;
+	    }
+
 
 }
