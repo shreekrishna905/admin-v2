@@ -18,14 +18,17 @@ public class UserDAOImpl implements UserDAO {
 	EntityManager entityManager;
 	
 	
+	@SuppressWarnings("rawtypes")
 	@Override
 	@Transactional(readOnly=true)
 	public User findByUserName(String username) {
-		User user = (User) entityManager.createQuery("select u from User u where u.username= :username")
+		List results =  entityManager.createQuery("select u from User u where u.username= :username")
 											.setParameter("username", username)
-											.getSingleResult();
-		return user;
-		
+											.getResultList();
+		if (results.isEmpty()) {
+		    return null; 
+		} 
+		    return (User) results.get(0);
 	}
 	
 	@Override
@@ -51,6 +54,5 @@ public class UserDAOImpl implements UserDAO {
 	public boolean isUserExist(User user) {
 		return findByUserName(user.getUsername()) !=null;
 	}
-
 
 }

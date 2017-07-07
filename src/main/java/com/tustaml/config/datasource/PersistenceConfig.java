@@ -47,7 +47,7 @@ public class PersistenceConfig {
 
 	@Bean(name = "dataSource")
 	public DataSource dataSource() {
-		return new JndiDataSourceLookup().getDataSource("java:/TamlMasterDS");
+		return new JndiDataSourceLookup().getDataSource("java:/TamlDS");
 	}
 
 	@Bean
@@ -66,7 +66,7 @@ public class PersistenceConfig {
 		final Properties hibernateProperties = new Properties();
 		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("spring.jpa.hibernate.ddl-auto"));
 		hibernateProperties.setProperty("hibernate.dialect", env.getProperty("spring.jpa.hibernate.dialect"));
-		hibernateProperties.setProperty("show_sql",  env.getProperty("spring.jpa.show-sql"));
+		hibernateProperties.setProperty("hibernate.show_sql",  env.getProperty("spring.jpa.show-sql"));
 		hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", "false");
 		return hibernateProperties;
 	}

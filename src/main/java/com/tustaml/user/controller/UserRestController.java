@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,10 +35,13 @@ public class UserRestController {
 	
 	@RequestMapping(value = "/user", method = RequestMethod.POST)
 	public ResponseEntity<Void> createUser(@RequestBody User user, UriComponentsBuilder ucBuilder){
-					 if (userDAO.isUserExist(user)) {
-				            System.out.println("A User with name " + user.getUsername() + " already exist");
-				            return new ResponseEntity<Void>(HttpStatus.CONFLICT);
-				        }
+			if (userDAO.isUserExist(user)) {
+		            System.out.println("A User with name " + user.getUsername() + " already exist");
+		            return new ResponseEntity<Void>(HttpStatus.CONFLICT);
+		    }
+			// Encode password and set to user password
+			String encodedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
+			user.setPassword(encodedPassword);		
 	        userDAO.saveOrUpdate(user);
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.setLocation(ucBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri());
