@@ -21,9 +21,9 @@ public class UserDAOImpl implements UserDAO {
 	@SuppressWarnings("rawtypes")
 	@Override
 	@Transactional(readOnly=true)
-	public User findByUserName(String username) {
-		List results =  entityManager.createQuery("select u from User u where u.username= :username")
-											.setParameter("username", username)
+	public User findByEmail(String email) {
+		List results =  entityManager.createQuery("select u from User u where u.email= :email")
+											.setParameter("email", email)
 											.getResultList();
 		if (results.isEmpty()) {
 		    return null; 
@@ -52,7 +52,7 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public boolean isUserExist(User user) {
-		return findByUserName(user.getUsername()) !=null;
+		return findByEmail(user.getEmail()) !=null;
 	}
 
 }

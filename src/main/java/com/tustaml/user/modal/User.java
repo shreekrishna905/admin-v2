@@ -10,11 +10,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tustaml.relationship.modal.RelationShip;
+
+
 @Entity
-@Table(name="users")
+@Table(name="tbl_users")
 public class User {
 
 	@Id
@@ -22,9 +27,7 @@ public class User {
 	@GeneratedValue(strategy= GenerationType.SEQUENCE, generator="users_id_seq")
 	private Long id;
 	
-	@Column(name="user_name")
-	private String username;
-	
+	@JsonIgnore
 	private String password;
 	
 	@Column(name="first_name")
@@ -39,22 +42,30 @@ public class User {
 	private String email;
 	
 	private boolean enabled;
-
+	
 	@ManyToMany
     @JoinTable( 
-        name = "users_roles", 
+        name = "tbl_users_roles", 
         joinColumns = @JoinColumn(
           name = "user_id", referencedColumnName = "id"), 
         inverseJoinColumns = @JoinColumn(
           name = "role_id", referencedColumnName = "id")) 
 	private Collection<Role> roles;
 	
+	@OneToMany(mappedBy="userOne")
+	@JsonIgnore
+	private Collection<RelationShip> relationShipOne;
+	
+	@OneToMany(mappedBy="userTwo")
+	@JsonIgnore
+	private Collection<RelationShip> relationShipTwo;
+	
+	@OneToMany(mappedBy="userAction")
+	@JsonIgnore
+	private Collection<RelationShip> relationShipAction;
+	
 	public Long getId() {
 		return id;
-	}
-
-	public String getUsername() {
-		return username;
 	}
 
 	public String getPassword() {
@@ -83,10 +94,6 @@ public class User {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
 	}
 
 	public void setPassword(String password) {
@@ -126,6 +133,29 @@ public class User {
 		role.getUsers().add(this);
 		this.roles.add(role);
 	}
-	
+
+	public Collection<RelationShip> getRelationShipOne() {
+		return relationShipOne;
+	}
+
+	public void setRelationShipOne(Collection<RelationShip> relationShipOne) {
+		this.relationShipOne = relationShipOne;
+	}
+
+	public Collection<RelationShip> getRelationShipTwo() {
+		return relationShipTwo;
+	}
+
+	public void setRelationShipTwo(Collection<RelationShip> relationShipTwo) {
+		this.relationShipTwo = relationShipTwo;
+	}
+
+	public Collection<RelationShip> getRelationShipAction() {
+		return relationShipAction;
+	}
+
+	public void setRelationShipAction(Collection<RelationShip> relationShipAction) {
+		this.relationShipAction = relationShipAction;
+	}
 	
 }

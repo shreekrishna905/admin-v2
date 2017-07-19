@@ -36,7 +36,7 @@ public class UserRestController {
 	@RequestMapping(value = "/user", method = RequestMethod.POST)
 	public ResponseEntity<Void> createUser(@RequestBody User user, UriComponentsBuilder ucBuilder){
 			if (userDAO.isUserExist(user)) {
-		            System.out.println("A User with name " + user.getUsername() + " already exist");
+		            System.out.println("A User with name " + user.getEmail() + " already exist");
 		            return new ResponseEntity<Void>(HttpStatus.CONFLICT);
 		    }
 			// Encode password and set to user password
@@ -49,10 +49,10 @@ public class UserRestController {
 	}
 	
 	@RequestMapping(value="/user", method=RequestMethod.GET, produces="application/json")
-	public ResponseEntity<User> getUser(@RequestParam("username") String username){
-		 User user = userDAO.findByUserName(username);
+	public ResponseEntity<User> getUser(@RequestParam("email") String email){
+		 User user = userDAO.findByEmail(email);
 	        if (user == null) {
-	            System.out.println("User with username " + username + " not found");
+	            System.out.println("User with username " + email + " not found");
 	            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
 	        }
 	        return new ResponseEntity<User>(user, HttpStatus.OK);
