@@ -34,11 +34,9 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 	    	http
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER)
             .and()
-            .requestMatchers()
-            .antMatchers("/**")
-            .and()
             .authorizeRequests()
             .antMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/user/check").permitAll()
             .antMatchers(HttpMethod.GET, "/api/**").access("#oauth2.hasScope('read')")
             .antMatchers(HttpMethod.PATCH, "/api/**").access("#oauth2.hasScope('write')")
             .antMatchers(HttpMethod.POST, "/api/**").access("#oauth2.hasScope('write')")
@@ -46,4 +44,5 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
             .antMatchers(HttpMethod.DELETE, "/api/**").access("#oauth2.hasScope('write')")
             .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')");
 	    }
+	    
 }

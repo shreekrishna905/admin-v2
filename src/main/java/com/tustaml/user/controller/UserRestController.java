@@ -35,7 +35,7 @@ public class UserRestController {
 	
 	@RequestMapping(value = "/user", method = RequestMethod.POST)
 	public ResponseEntity<Void> createUser(@RequestBody User user, UriComponentsBuilder ucBuilder){
-			if (userDAO.isUserExist(user)) {
+			if (userDAO.isUserExist(user.getEmail())) {
 		            System.out.println("A User with name " + user.getEmail() + " already exist");
 		            return new ResponseEntity<Void>(HttpStatus.CONFLICT);
 		    }
@@ -46,6 +46,14 @@ public class UserRestController {
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.setLocation(ucBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri());
 	        return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+	}
+	
+	@RequestMapping(value = "/user/check", method = RequestMethod.GET)
+	public ResponseEntity<String> checkUser(@RequestParam("email") String email, UriComponentsBuilder ucBuilder){
+			if (userDAO.isUserExist(email)) {
+		        	return new ResponseEntity<String>("{\"status\":\"true\"}", HttpStatus.OK);
+		    }
+			return new ResponseEntity<String>("{\"status\":\"false\"}", HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/user", method=RequestMethod.GET, produces="application/json")

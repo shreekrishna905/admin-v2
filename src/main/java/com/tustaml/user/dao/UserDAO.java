@@ -8,5 +8,5 @@ public interface UserDAO {
 	public List<User> findAll();
 	public User findByEmail(String email);
 	public void saveOrUpdate(User user);
-	public boolean isUserExist(User user);
+	public boolean isUserExist(String email);
 }

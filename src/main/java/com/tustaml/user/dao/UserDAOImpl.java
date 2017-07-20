@@ -51,8 +51,8 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public boolean isUserExist(User user) {
-		return findByEmail(user.getEmail()) !=null;
+	public boolean isUserExist(String email) {
+		return findByEmail(email) !=null;
 	}
 
 }
