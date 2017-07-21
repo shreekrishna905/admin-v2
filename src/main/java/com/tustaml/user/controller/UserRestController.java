@@ -51,9 +51,9 @@ public class UserRestController {
 	@RequestMapping(value = "/user/check", method = RequestMethod.GET)
 	public ResponseEntity<String> checkUser(@RequestParam("email") String email, UriComponentsBuilder ucBuilder){
 			if (userDAO.isUserExist(email)) {
-		        	return new ResponseEntity<String>("{\"status\":\"true\"}", HttpStatus.OK);
+		        	return new ResponseEntity<String>("{\"status\":true}", HttpStatus.OK);
 		    }
-			return new ResponseEntity<String>("{\"status\":\"false\"}", HttpStatus.OK);
+			return new ResponseEntity<String>("{\"status\":false}", HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/user", method=RequestMethod.GET, produces="application/json")
